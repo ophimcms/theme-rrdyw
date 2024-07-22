@@ -1,0 +1,32 @@
+{
+    "name": "ophimcms/theme-rrdyw",
+    "description": "Ophim's rrdyw theme",
+    "type": "library",
+    "authors": [
+        {
+            "name": "ophimcms",
+            "email": "dev@ophim.cc"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^6|^7|^8",
+        "ckfinder/ckfinder-laravel-package": "v3.5.2.1",
+        "hacoidev/ophim-core": "^1.0.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ophim\\ThemeRrdyw\\": "src/",
+            "Ophim\\ThemeRrdyw\\Database\\Factories\\": "database/factories/",
+            "Ophim\\ThemeRrdyw\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "ThemeRrdywServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}
