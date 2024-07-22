@@ -1,43 +1,15 @@
 @extends('themes::themerrdyw.layout')
 @section('content')
-    <script>
-        var body = document.body;
-        body.classList.add("view");
-        body.classList.add("play");
-    </script>
-    <style>.scroll-content li {
-            display: inline
-        }
-
-        .sort-item li {
-            display: inline
-        }
-
-        .playon {
-        }
-
-        .playon a {
-            color: #FF8C00 !important;
-            background: #000 !important
-        }
-
-        .fsxoyo {
-            width: 100%;
-            padding-bottom: 56.25%;
-            height: 0;
-            position: relative
-        }
-
-        .wupanzhi {
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            position: absolute
+    <style>
+        .activeplay {
+            background-color: #FF9900;
+            color: #FFFFFF;
+            border: 1px solid #FF9900;
         }
 
         .active-server {
-            background: #FFF !important;
-            color: #0a0d0e !important;
+            background: #d9a0a0 !important;
+            color: #FFF !important;
         }
 
         .playactive {
@@ -49,202 +21,117 @@
             cursor: pointer !important;
         }
     </style>
-    <main id="main" class="wrapper">
-        <div class="player-block">
-            <div class="content">
-                <div class="player-box">
-                    <div class="player-box-main">
-                        @if ($currentMovie->notify || $currentMovie->showtimes)
-                        <div class="tips-box">
-                            <span class="close-btn"><i class="icon-close-o"></i></span>
-                            <ul class="tips-list">
-                                <li>@if ($currentMovie->showtimes)
-                                        Lịch chiếu : {!! $currentMovie->showtimes !!}
-                                    @endif
-                                    |
-                                    @if ($currentMovie->notify )
-                                        Thông báo : {{ strip_tags($currentMovie->notify) }}
-                                    @endif
-                                </li>
-                            </ul>
-                        </div>
+    <div class="row">
+        @if ($currentMovie->notify || $currentMovie->showtimes)
+            <div class="stui-pannel stui-pannel-bg clearfix">
+                <div class="stui-pannel-box clearfix">
+                    <div class="stui-pannel_hd">
+                        @if ($currentMovie->showtimes)
+                            <p><strong>Lịch chiếu : </strong> {{$currentMovie->showtimes}}</p>
                         @endif
-                        <div class="fsxoyo">
-                            <div class="wupanzhi" id="player-wrapper">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="player-info">
-                    <div class="video-info">
-                        <div class="video-info-box">
-                            <div class="video-info-header"><h1 class="page-title"><a
-                                        href="{{ $currentMovie->getUrl() }}"
-                                        title="{{ $currentMovie->name }}">{{ $currentMovie->name }} </a>-
-                                    Tập {{ $episode->name }}
-                                </h1><span
-                                    class="btn-pc page-title"></span>
-                                <div class="video-info-aux">
-                                    @foreach ($currentMovie->episodes->where('slug', $episode->slug)->where('server', $episode->server) as $server)
-                                        <a onclick="chooseStreamingServer(this)" data-type="{{ $server->type }}"
-                                           id="streaming-sv" data-id="{{ $server->id }}"
-                                           data-link="{{ $server->link }}" class="streaming-server tag-link"
-                                           style="background: #232328;color: #FFF">
-                                            Nguồn #{{ $loop->index + 1 }}
-                                        </a>
-                                    @endforeach
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="player-box-side">
-                    <div class="module-heading"><h2 class="module-title">Tập phim</h2>
-                        <div class="module-tab module-player-tab player-side-tab">
-                            <input type="hidden" name="tab" id="tab"
-                                   class="module-tab-input">
-                            <label
-                                class="module-tab-name"><span class="module-tab-value">Server</span><i
-                                    class="icon-arrow-bottom-o"></i></label>
-                            <div class="module-tab-items">
-                                <div class="module-tab-title">Chọn<span class="close-drop"><i
-                                            class="icon-close-o"></i></span></div>
-                                <div class="module-tab-content">
-                                    @foreach ($currentMovie->episodes->sortBy([['server', 'asc']])->groupBy('server') as $server => $data)
-                                        <a class="module-tab-item tab-item @if ($episode->server == $server) selected @endif">
-                                            <span
-                                                data-dropdown-value="{{ $server }}">{{ $server }}</span><small></small>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        <div class="shortcuts-mobile-overlay"></div>
-                    </div>
-
-                    @foreach ($currentMovie->episodes->sortBy([['server', 'asc']])->groupBy('server') as $server => $data)
-                        <div
-                            class="module-list module-player-list tab-list sort-list player-side-playlist @if ($episode->server == $server) selected @endif"
-                            itemscope="" itemprop="episode" itemtype="http://schema.org/Episode">
-                            <div class="module-tab module-sorttab"><input type="hidden" name="tab-sort" id="tab-sort"
-                                                                          class="module-tab-input"><label
-                                    class="module-tab-name"><i class="icon-sort"></i></label>
-                                <div class="module-tab-items">
-                                    <div class="module-tab-title">{{ $server }}<span class="close-drop"><i
-                                                class="icon-close-o"></i></span></div>
-                                    <div class="module-tab-content">
-                                        <div class="module-blocklist">
-                                            <div class="sort-item">
-                                                @foreach ($data->sortBy('name', SORT_NATURAL)->groupBy('name') as $name => $item)
-                                                    <li><a class="@if ($item->contains($episode)) playactive @endif"
-                                                           href="{{ $item->sortByDesc('type')->first()->getUrl() }}">
-                                                            {{ $name }}</a></li>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="shortcuts-mobile-overlay"></div>
-                            <div class="module-blocklist scroll-box scroll-box-y">
-                                <div class="scroll-content">
-                                    @foreach ($data->sortBy('name', SORT_NATURAL)->groupBy('name') as $name => $item)
-                                        <li><a class="@if ($item->contains($episode)) playactive @endif"
-                                               href="{{ $item->sortByDesc('type')->first()->getUrl() }}">
-                                                {{ $name }}</a></li>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-
-        <div class="content">
-
-            <div class="module module-wrapper">
-                <div class="module-main">
-                    <div class="rating-content">
-                        <div id="movies-rating-star" style="height: 18px;"></div>
-                        <div>
-                            ({{$currentMovie->getRatingStar()}}
-                            sao
-                            /
-                            {{$currentMovie->getRatingCount()}} đánh giá)
-                        </div>
-                        <div id="movies-rating-msg"></div>
+                        @if ($currentMovie->notify )
+                            <p><strong>Thông báo : </strong> {{$currentMovie->notify}}</p>
+                        @endif
                     </div>
                 </div>
             </div>
-            <div class="module module-wrapper">
-                <div class="module-main">
-                    <div class="module-heading"><h2 class="module-title" title="">Bình luận</h2>
-                    </div>
-                    <div class="module-list module-lines-list">
-                        <div style="width: 100%; background-color: #fff">
-                            <div class="fb-comments w-full" data-href="{{ $currentMovie->getUrl() }}" data-width="100%"
-                                 data-numposts="5" data-colorscheme="light" data-lazy="true">
-                            </div>
+        @endif
+        <div class="stui-pannel stui-pannel-bg clearfix">
+            <div class="stui-pannel-box">
+                <div class="stui-pannel-bd">
+                    <div class="stui-player col-pd">
+                        <div class="stui-player__video embed-responsive embed-responsive-16by9 clearfix"
+                             id="player-wrapper">
                         </div>
-                    </div>
-                    <div class="module-heading" style="margin-top: 10px"><h2 class="module-title"
-                                                                             title="Có thể bạn thích">Có thể bạn
-                            thích</h2>
-                    </div>
-                    <div class="module-list module-lines-list">
-                        <div class="module-items">
-                            @foreach ($movie_related as $movie)
-                                @include('themes::themeRrdyw.inc.section.movie_card')
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                <div class="module-side">
-                    <div class="module-heading"><h2 class="module-title">Xem nhiều</h2></div>
-                    <div class="module-side-list module-bg">
-                        <div class="scroll-box">
-                            <div class="module-textlist scroll-content">
-                                @php
-                                    $key = 0;
-                                @endphp
-                                @foreach ($movie_related_top as $movie)
-                                    @php
-                                        $key++;
-                                    switch ($key) {
-                                        case 1:
-                                            $class_top = 'top-1';
-                                            break;
-                                        case 2:
-                                            $class_top = 'top-2';
-                                            break;
-                                        case 3:
-                                            $class_top = 'top-3';
-                                            break;
-                                        default:
-                                            $class_top = '';
-                                            break;
-                                            }
-                                    @endphp
-                                    <a href="{{$movie->getUrl()}}"
-                                       class="text-list-item">
-                                        <div class="text-list-num top-main <?= $class_top ?>"><?= $key ?></div>
-                                        <div class="text-list-title"><h3>{{$movie->name}}</h3>
-                                            <p>Lượt xem : {{$movie->view_total}}</p></div>
+                        <div class="stui-player__detail detail">
+                            <h4 class="title"><a href="{{ $currentMovie->getUrl() }}">{{$currentMovie->name}}</a> -
+                                Tập {{ $episode->name }}</h4>
+                            <p class="data margin-0">
+                                <span class="text-muted hidden-xs">Quốc gia：</span> {!! $currentMovie->regions->map(function ($region) {
+                        return '<a href="' . $region->getUrl() . '" title="' . $region->name . '">' . $region->name . '</a>';
+                    })->implode(', ') !!}
+                                <span class="split-line"></span><span
+                                    class="text-muted hidden-xs">Năm ：</span>{{ $currentMovie->publish_year }}
+                                <span class="split-line"></span><a class="detail-more" href="javascript:">Đổi Server<i
+                                        class="icon iconfont icon-moreunfold"></i></a>
+
+                            </p>
+                            <div class="detail-content" style="display: none;margin-top: 20px">
+                                @foreach ($currentMovie->episodes->where('slug', $episode->slug)->where('server', $episode->server) as $server)
+                                    <a onclick="chooseStreamingServer(this)" data-type="{{ $server->type }}" id="streaming-sv"
+                                       data-id="{{ $server->id }}" data-link="{{ $server->link }}"
+                                       class="streaming-server tag-link"
+                                       style="background: #303033;color: #FFF;padding: 10px;border-radius: 10px;margin: 5px">
+                                        Nguồn #{{ $loop->index + 1 }}
                                     </a>
                                 @endforeach
-
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+        <!-- 播放器-->
+            @foreach ($currentMovie->episodes->sortBy([['server', 'asc']])->groupBy('server') as $server => $data)
+        <div class="stui-pannel stui-pannel-bg clearfix">
+            <div class="stui-pannel-box">
+                <div class="stui-pannel_hd">
+                    <div class="stui-pannel__head bottom-line active clearfix">
+                        <h3 class="title">
+                            <img src="{{ asset('/themes/rrdyw/statics/icon/icon_1.png') }}"
+                                 alt="">{{ $server }}</h3>
+                    </div>
+                </div>
+                <div class="stui-pannel_bd col-pd clearfix">
+                    <ul class="stui-content__playlist column10 clearfix">
+                        @foreach ($data->sortBy('name', SORT_NATURAL)->groupBy('name') as $name => $item)
+                        <li><a @if ($item->contains($episode)) class="activeplay" @endif href="{{ $item->sortByDesc('type')->first()->getUrl() }}" target="_self"> {{ $name }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+            @endforeach
+        <div class="stui-pannel stui-pannel-bg clearfix">
+            <div class="stui-pannel-box">
+                <div class="stui-pannel_hd">
+                    <div class="stui-pannel__head bottom-line active clearfix">
+                        <h3 class="title"><img src="{{ asset('/themes/rrdyw/statics/icon/icon_23.png') }}"
+                                               alt="404">Bình luận</h3></div>
+                </div>
+                <div class="stui-pannel_bd col-pd clearfix">
+                    <div style="width: 100%; background-color: #fff;margin-top: 10px">
+                        <div class="fb-comments w-full" data-href="{{ $currentMovie->getUrl() }}" data-width="100%"
+                             data-numposts="5" data-colorscheme="light" data-lazy="true">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 播放列表-->
+        <div class="stui-pannel stui-pannel-bg clearfix">
+            <div class="stui-pannel-box">
+                <div class="stui-pannel_hd">
+                    <div class="stui-pannel__head clearfix">
+                        <h3 class="title">
+                            <img src="{{ asset('/themes/rrdyw/statics/icon/icon_6.png') }}">Có thể bạn thích
+                        </h3>
+                    </div>
+                </div>
+                <div class="stui-pannel_bd">
+                    <ul class="stui-vodlist__bd clearfix">
+                        @foreach ($movie_related as $movie)
+                            <li class="col-md-6 col-sm-4 col-xs-3">
+                                @include('themes::themerrdyw.inc.section.movie_card')
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 猜你喜欢-->
+    </div>
 @endsection
 
 @push('scripts')
