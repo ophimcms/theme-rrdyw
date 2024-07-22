@@ -39,11 +39,15 @@
                                                 class="icon iconfont icon-more text-muted pull-right"></i> {{$movie->name}}</a>
                                     </h4>
                                     <p class="font-12">
-                                        <span class="text-muted">Thể loại：</span>
+                                        <span class="text-muted">Quốc gia： {!! $movie->regions->map(function ($region) {
+                        return '<a href="' . $region->getUrl() . '" title="' . $region->name . '">' . $region->name . '</a>';
+                    })->implode(', ') !!}</span>
 
                                     </p>
                                     <p class="font-12 margin-0">
-                                        <span class="text-muted">Diễn viên：</span>
+                                        <span class="text-muted">Diễn viên：{!! $movie->actors->take(2)->map(function ($director) {
+                        return '<a href="' . $director->getUrl() . '" title="' . $director->name . '">' . $director->name . '</a>';
+                    })->implode(', ') !!}</span>
 
                                     </p>
                                 </div>
