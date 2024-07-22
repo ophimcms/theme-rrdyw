@@ -42,7 +42,7 @@
         </div>
         <!-- 筛选列表 -->
         <ul class="stui-page text-center cleafix">
-            {{ $data->appends(request()->all())->links("themes::themedy.inc.pagination") }}
+            {{ $data->appends(request()->all())->links("themes::themerrdyw.inc.pagination") }}
         </ul>
         <!-- 列表翻页-->
     </div>
