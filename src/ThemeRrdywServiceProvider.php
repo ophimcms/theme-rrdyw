@@ -44,18 +44,10 @@ class ThemeRrdywServiceProvider extends ServiceProvider
                         'name' => 'movie_related_limit',
                         'label' => 'Movies related limit',
                         'type' => 'number',
-                        'value' => 14,
+                        'value' => 12,
                         'wrapperAttributes' => [
                             'class' => 'form-group col-md-4',
                         ],
-                        'tab' => 'List'
-                    ],
-                    [
-                        'name' => 'home_page_slider_poster',
-                        'label' => 'Home page slider poster',
-                        'type' => 'text',
-                        'hint' => 'Label|relation|find_by_field|value|sort_by_field|sort_algo|limit',
-                        'value' => 'Slide||is_recommended|0|updated_at|desc|10',
                         'tab' => 'List'
                     ],
                     [
@@ -65,9 +57,9 @@ class ThemeRrdywServiceProvider extends ServiceProvider
                         'hint' => 'display_label|relation|find_by_field|value|limit|show_more_url|show_template (section_thumb|section_side)',
                         'value' => <<<EOT
                         Phim chiếu rạp||is_shown_in_theater|1|updated_at|desc|16|/danh-sach/phim-chieu-rap|section_thumb
-                        Phim bộ mới||type|series|updated_at|desc|14|/danh-sach/phim-bo|section_side
-                        Phim lẻ mới||type|single|updated_at|desc|14|/danh-sach/phim-le|section_side
-                        Hoạt hình|categories|slug|hoat-hinh|updated_at|desc|14|/the-loai/hoat-hinh|section_side
+                        Phim bộ mới||type|series|updated_at|desc|15|/danh-sach/phim-bo|section_side
+                        Phim lẻ mới||type|single|updated_at|desc|15|/danh-sach/phim-le|section_side
+                        Hoạt hình|categories|slug|hoat-hinh|updated_at|desc|15|/the-loai/hoat-hinh|section_side
                         EOT,
                         'attributes' => [
                             'rows' => 5

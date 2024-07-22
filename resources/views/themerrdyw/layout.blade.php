@@ -1,7 +1,6 @@
 @extends('themes::layout')
 @php
     $menu = \Ophim\Core\Models\Menu::getTree();
-
     $tops = Cache::remember('site.movies.tops', setting('site_cache_ttl', 5 * 60), function () {
         $lists = preg_split('/[\n\r]+/', get_theme_option('hotest'));
         $data = [];
@@ -47,7 +46,6 @@
             SiteTid = '',
             SiteId = '';
     </script>
-
 @endpush
 
 @section('body')
