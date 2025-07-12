@@ -52,22 +52,16 @@
     .dropdown-content {
         display: none;
         position: absolute;
-        background-color: #e3cfcf;
+        background-color: #ffffff;
         min-width: 160px;
         box-shadow: 0px 8px 16px 0px rgba(232, 204, 204, 0.2);
         z-index: 1;
+        max-height: 300px;
+        overflow: auto;
     }
 
     .dropdown:hover .dropdown-content {
         display: block;
-    }
-
-    .dropdown-menu li:hover {
-        background: #0a5c6f;
-    }
-
-    .dropdown-menu li {
-        padding-left: 10px;
     }
 </style>
 <header class="stui-header__top clearfix" id="header-top">
@@ -85,7 +79,7 @@
                 <div class="stui-header__side">
                     <div class="stui-header__search">
                         <form action="/" method="get" name="formsearch" id="formsearch">
-                            <input type="text" id="wd" name="s" class="sin form-control" value="{{ request('search') }}" autocomplete="off">
+                            <input type="text" id="wd" name="s" class="sin form-control" value="{{ request('search') }}" autocomplete="off" placeholder="Tìm kiếm...">
                             <input type="submit" id="searchbutton" value="" class="hide">
                             <button class="submit" id="submit" onclick="$('#formsearch').submit();">
                                 <i class="icon iconfont icon-search"></i>
@@ -97,8 +91,8 @@
                 <ul class="stui-header__menu type-slide">
                         @foreach ($menu as $item)
                             @if (count($item['children']))
-                            <li class="nav-menu-item dropdown">
-                                <a href="{{$item['link']}}" title="{{$item['name']}}">
+                            <li class="nav-menu-item dropdown has-dropdown">
+                                <a href="{{$item['link']}}" title="{{$item['name']}}" >
                                     <span class="nav-menu-item-name">{{$item['name']}}</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-content">
@@ -146,4 +140,43 @@
         $("#result").html('');
     });
     $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
+</script>
+
+<script>
+$(function() {
+    function isMobile() {
+        return window.innerWidth <= 1024;
+    }
+
+    // Xử lý click menu dropdown trên mobile
+    $('.stui-header__menu .dropdown > a').on('click', function(e) {
+        if (isMobile()) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            // Xóa dropdown cũ nếu có
+            $('#mobile-dropdown-portal').remove();
+
+            var $parent = $(this).parent();
+            var $dropdown = $parent.find('.dropdown-content').first().clone();
+            var offset = $(this).offset();
+            var height = $(this).outerHeight();
+
+            // Tạo dropdown mới ở body
+            var $portal = $('<ul id=\"mobile-dropdown-portal\" class=\"dropdown-menu dropdown-content\" style=\"display:block; position:fixed; left:' + offset.left + 'px; top:' + (offset.top + height) + 'px; z-index:99999; background:#fff; min-width:160px; box-shadow:0 8px 16px 0 rgba(0,0,0,0.2);\"></ul>');
+            $portal.append($dropdown.children());
+            $('body').append($portal);
+
+            // Đóng khi click ra ngoài
+            setTimeout(function() {
+                $(document).one('touchstart click', function(ev) {
+                    if (!$(ev.target).closest('#mobile-dropdown-portal').length) {
+                        $('#mobile-dropdown-portal').remove();
+                    }
+                });
+            }, 10);
+        }
+    });
+});
 </script>
